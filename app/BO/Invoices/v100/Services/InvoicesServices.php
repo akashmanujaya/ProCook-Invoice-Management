@@ -57,4 +57,40 @@ class InvoicesServices
         $invoice =  $this->InvoiceRepo->findByNumber($invoiceNumber);
         return $this->transformInvoice($invoice);
     }
+
+    public function updateInvoice($data, $invoiceNumber)
+    {
+        try {
+            $invoice = $this->InvoiceRepo->updateInvoice($data, $invoiceNumber);
+            return $this->transformInvoice($invoice);
+        } catch (BaseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function toggleStatus($invoiceNumber)
+    {
+        try {
+            $invoice = $this->InvoiceRepo->toggleStatus($invoiceNumber);
+            return $this->transformInvoice($invoice);
+        } catch (BaseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function deleteInvoice($invoiceNumber)
+    {
+        try {
+            $invoice = $this->InvoiceRepo->deleteInvoice($invoiceNumber);
+            return $this->transformInvoice($invoice);
+        } catch (BaseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
 }

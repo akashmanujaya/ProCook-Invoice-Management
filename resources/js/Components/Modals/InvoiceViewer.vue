@@ -31,8 +31,9 @@ defineExpose({
       <h3 class="font-semibold text-lg mb-10">Invoice Details</h3>
       <div class="text-left p-4">
         <p><strong>Invoice Number:</strong> {{ invoice.invoice_number }}</p>
-        <p><strong>Customer Name:</strong> {{ invoice.customer_name }}</p>
+        <p><strong>Customer Name:</strong> {{ invoice.first_name }} {{ invoice.last_name }}</p>
         <p><strong>Invoice Date:</strong> {{ invoice.invoice_date }}</p>
+        <p><strong>Payment Term:</strong> {{ invoice.payment_term }} Days</p>
         <p><strong>Due Date:</strong> {{ invoice.due_date }}</p>
         <p><strong>Total Amount:</strong> ${{ invoice.total_amount }}</p>
         <p><strong>Description:</strong> {{ invoice.description }}</p>

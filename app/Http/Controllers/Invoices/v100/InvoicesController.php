@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Invoices\v100;
 
 use App\Base\Controller\BaseController;
 use App\BO\Invoices\v100\Requests\InvoicesCreationRequest;
+use App\BO\Invoices\v100\Requests\InvoiceUpdateRequest;
 use App\BO\Invoices\v100\Services\InvoicesServices;
 use Illuminate\Http\Request;
 
@@ -73,8 +74,6 @@ class InvoicesController extends BaseController
         }
     }
 
-
-
     public function store(InvoicesCreationRequest $request)
     {
         try {
@@ -94,13 +93,58 @@ class InvoicesController extends BaseController
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(InvoiceUpdateRequest $request, $invoiceNumber)
     {
-        // Your code here
+        try {
+            $invoice = $this->invoiceService->updateInvoice($request->validated(), $invoiceNumber);
+
+            // Return the updated invoice as JSON for Vue.js to use and update the UI
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Invoice updated successfully',
+                'data' => $invoice
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function toggleStatus($invoiceNumber)
+    {
+        try {
+            $invoice = $this->invoiceService->toggleStatus($invoiceNumber);
+
+            // Return the updated invoice as JSON for Vue.js to use and update the UI
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Invoice status updated successfully',
+                'data' => $invoice
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function destroy($id)
     {
-        // Your code here
+       try {
+            $invoice = $this->invoiceService->deleteInvoice($id);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Invoice deleted successfully',
+                'data' => $invoice
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

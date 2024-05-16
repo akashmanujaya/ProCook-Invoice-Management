@@ -83,4 +83,38 @@ class InvoicesRepository implements InvoicesReporitoryInterface
             echo $e->getMessage();
         }
     }
+
+    public function updateInvoice(array $data, $invoiceNumber)
+    {
+        try {
+            $invoice = $this->model->where('invoice_number', $invoiceNumber)->first();
+            $invoice->update($data);
+            return $invoice;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function toggleStatus($invoiceNumber)
+    {
+        try {
+            $invoice = $this->model->where('invoice_number', $invoiceNumber)->first();
+            $invoice->status = !$invoice->status;
+            $invoice->save();
+            return $invoice;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function deleteInvoice($invoiceNumber)
+    {
+        try {
+            $invoice = $this->model->where('invoice_number', $invoiceNumber)->first();
+            $invoice->delete();
+            return $invoice;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
 }

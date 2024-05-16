@@ -2,9 +2,9 @@
 import { onMounted, ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import InvoiceCreator from '@/Components/InvoiceCreator.vue';
-import InvoiceFilters from '@/Components/InvoiceFilters.vue';
-import InvoiceTable from '@/Components/InvoiceTable.vue';
+import InvoiceCreator from '@/Components/Modals/InvoiceCreator.vue';
+import InvoiceFilters from '@/Components/Filters/InvoiceFilters.vue';
+import InvoiceTable from '@/Components/Tables/InvoiceTable.vue';
 
 
 const filters = ref({});

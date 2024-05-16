@@ -53,7 +53,7 @@
                 {{ invoice.invoice_number }}
               </td>
               <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                {{ invoice.customer_name }}
+                {{ invoice.first_name }} {{ invoice.last_name }}
               </td>
               <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                 ${{ invoice.total_amount }}
@@ -69,7 +69,8 @@
                 {{ invoice.status }}
               </td>
               <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-                <table-dropdown :invoice-number="invoice.invoice_number" @view-invoice="handleViewInvoice"/>
+                <table-dropdown :invoice-number="invoice.invoice_number" :invoice-status="invoice.status" @view-invoice="handleViewInvoice"
+                @edit-invoice="handleEditInvoice" />
               </td>
             </tr>
           </tbody>
@@ -89,16 +90,19 @@
     </div>
 
     <invoice-viewer ref="invoiceViewer" />
+    <invoice-editor ref="invoiceEditor" />
   </template>
   
   <script>
-  import TableDropdown from "@/Components/TableDropdown.vue";
-  import InvoiceViewer from '@/Components/InvoiceViewer.vue';
+  import TableDropdown from "@/Components/Dropdowns/TableDropdown.vue";
+  import InvoiceViewer from '@/Components/Modals/InvoiceViewer.vue';
+  import InvoiceEditor from '@/Components/Modals/InvoiceEditor.vue';
   
   export default {
     components: {
       TableDropdown,
       InvoiceViewer,
+      InvoiceEditor,
     },
     props: {
       color: {
@@ -190,14 +194,19 @@
         axios.get(`/invoices/${invoiceNumber}`)
           .then(response => {
             const invoiceDetails = response.data.data;
-            // Now do something with invoiceDetails, like showing it in a modal or a dedicated section
             this.$refs.invoiceViewer.setInvoice(invoiceDetails);
             this.$refs.invoiceViewer.openModal();
           })
           .catch(error => {
             console.error('Error fetching invoice details:', error);
           });
+      },
+      handleEditInvoice(invoiceNumber) {
+          axios.get(`/invoices/${invoiceNumber}`).then(response => {
+              this.$refs.invoiceEditor.openModal(response.data.data);
+          });
       }
+
     },
     computed: {
       totalPages() {
