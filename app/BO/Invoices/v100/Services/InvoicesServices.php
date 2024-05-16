@@ -50,4 +50,10 @@ class InvoicesServices
             echo $e->getMessage();
         }
     }
+
+    public function getInvoiceByNumber($invoiceNumber)
+    {
+        $invoice =  $this->InvoiceRepo->findByNumber($invoiceNumber);
+        return $this->transformInvoice($invoice);
+    }
 }

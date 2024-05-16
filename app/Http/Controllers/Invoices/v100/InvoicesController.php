@@ -40,9 +40,29 @@ class InvoicesController extends BaseController
         }
     }
 
-    public function show($id)
+    public function show($invoiceNumber)
     {
-        // Your code here
+        try {
+            $invoice = $this->invoiceService->getInvoiceByNumber($invoiceNumber);
+    
+            if (!$invoice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invoice not found'
+                ], 404);
+            }
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Invoice retrieved successfully',
+                'data' => $invoice
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function store(InvoicesCreationRequest $request)

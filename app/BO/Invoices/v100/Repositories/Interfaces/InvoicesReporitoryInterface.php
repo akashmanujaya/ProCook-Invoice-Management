@@ -6,5 +6,5 @@ interface InvoicesReporitoryInterface
 {
     public function createInvoice(array $data);
     public function generateInvoiceNumber();
-    public function getInvoiceById($id);
+    public function findByNumber($invoiceNumber);
 }

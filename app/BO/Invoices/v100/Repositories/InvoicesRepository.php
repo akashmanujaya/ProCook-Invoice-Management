@@ -14,10 +14,10 @@ class InvoicesRepository implements InvoicesReporitoryInterface
         $this->model = $model;
     }
 
-    public function getInvoiceById($id)
+    public function findByNumber($invoiceNumber)
     {
         try {
-            $invoice = $this->model->find($id);
+            $invoice = $this->model->where('invoice_number', $invoiceNumber)->first();
             return $invoice;
         } catch (\Exception $e) {
             echo $e->getMessage();

@@ -49,6 +49,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { VForm, VTextField, VTextarea, VBtn } from 'vuetify/components';
 import 'vuetify/styles' 
 import moment from 'moment';
+import Swal from 'sweetalert2';
 
 const isModalOpen = ref(false);
 const invoice = ref({
@@ -107,11 +108,19 @@ function createInvoice() {
     })
     .then(response => {
         if (response.data.status === 'success') {
-            alert(response.data.message); // Or use a more sophisticated notification system
+          Swal.fire({
+            title: 'Success!',
+            text: 'Invoice created successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          }).then(() => {
             loading.value = false;
             setDefaultvalues();
             closeModal();
-            errors.value = {}; // Clear any old errors
+            errors.value = {};
+            window.location.reload(); // Refresh the page
+          });
+          
         }
     })
     .catch(error => {

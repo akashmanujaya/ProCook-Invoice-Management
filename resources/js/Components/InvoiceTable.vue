@@ -69,7 +69,7 @@
                 {{ invoice.status }}
               </td>
               <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-                <table-dropdown />
+                <table-dropdown :invoice-number="invoice.invoice_number" @view-invoice="handleViewInvoice"/>
               </td>
             </tr>
           </tbody>
@@ -84,14 +84,18 @@
         </ul>
       </div>
     </div>
+
+    <invoice-viewer ref="invoiceViewer" />
   </template>
   
   <script>
   import TableDropdown from "@/Components/TableDropdown.vue";
+  import InvoiceViewer from '@/Components/InvoiceViewer.vue';
   
   export default {
     components: {
       TableDropdown,
+      InvoiceViewer,
     },
     props: {
       color: {
@@ -100,19 +104,13 @@
         validator: function (value) {
           return ["light", "dark"].indexOf(value) !== -1;
         },
-      },
-      invoices: Array,
-    },
-    watch: {
-      invoices(newValue, oldValue) {
-        // Handle updates if necessary
       }
     },
     data() {
       return {
         invoices: [],
         currentPage: 1,
-        pageSize: 3,
+        pageSize: 8,
         totalInvoices: 0,
       };
     },
@@ -159,6 +157,18 @@
 
         return range;
       },
+      handleViewInvoice(invoiceNumber) {
+        axios.get(`/invoices/${invoiceNumber}`)
+          .then(response => {
+            const invoiceDetails = response.data.data;
+            // Now do something with invoiceDetails, like showing it in a modal or a dedicated section
+            this.$refs.invoiceViewer.setInvoice(invoiceDetails);
+            this.$refs.invoiceViewer.openModal();
+          })
+          .catch(error => {
+            console.error('Error fetching invoice details:', error);
+          });
+      }
     },
     computed: {
       totalPages() {
