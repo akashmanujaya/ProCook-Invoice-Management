@@ -11,7 +11,7 @@ use App\Http\Controllers\Invoices\v100\InvoicesController;
  * The routes are dynamically namespaced to support versioning.
  */
 Route::prefix('invoices')->namespace('Invoices\\' . $version)->group(function () {
-    Route::get('/', [InvoicesController::class, 'index']); // List all invoices
+    Route::get('/', [InvoicesController::class, 'index']); // List all invoices with filters
     Route::post('/', [InvoicesController::class, 'store']); // Create a new invoice
     Route::get('/{invoiceNumber}', [InvoicesController::class, 'show']); // Show a single invoice
     Route::put('/{id}', [InvoicesController::class, 'update']); // Update an existing invoice

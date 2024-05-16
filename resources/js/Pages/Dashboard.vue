@@ -1,17 +1,17 @@
 <script setup>
-import { onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted, ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import InvoiceCreator from '@/Components/InvoiceCreator.vue';
 import InvoiceFilters from '@/Components/InvoiceFilters.vue';
 import InvoiceTable from '@/Components/InvoiceTable.vue';
 
-const store = useStore();
 
-onMounted(() => {
-  store.dispatch('fetchInvoices');
-});
+const filters = ref({});
+
+function updateFilters(newFilters) {
+    filters.value = newFilters;
+}
 </script>
 
 <template>
@@ -26,8 +26,8 @@ onMounted(() => {
             <div class="mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <InvoiceCreator/>
-                    <InvoiceFilters/>
-                    <InvoiceTable/>
+                    <InvoiceFilters @update-filters="updateFilters" />
+                    <InvoiceTable :filters="filters" />
                 </div>
             </div>
         </div>

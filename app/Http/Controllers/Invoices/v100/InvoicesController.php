@@ -20,12 +20,20 @@ class InvoicesController extends BaseController
     {
         try {
             $perPage = $request->input('perPage', 10); // Default to 10 items per page
-            $invoices = $this->invoiceService->getallInvoices($perPage);
+            $filters = [
+                'customerName' => $request->customerName,
+                'startDate' => $request->startDate ?? date('Y-m-d', 1970-01-01), // Default to 1970-01-01 if start date is null
+                'endDate' => $request->endDate ?? date('Y-m-d'), // Default to today if end date is null
+                'paidStatus' => $request->paidStatus ?? '',
+            ];
+
+
+            $invoices = $this->invoiceService->getInvoices($filters, $perPage);
             if (empty($invoices['data'])) {
                 return response()->json([
-                    'status' => 'success',
+                    'status' => 'Not Found',
                     'message' => 'No records available.'
-                ], 404);
+                ], 200);
             }
             return response()->json([
                 'status' => 'success',
@@ -64,6 +72,8 @@ class InvoicesController extends BaseController
             ], 500);
         }
     }
+
+
 
     public function store(InvoicesCreationRequest $request)
     {

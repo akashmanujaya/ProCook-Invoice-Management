@@ -29,10 +29,10 @@ class InvoicesServices
         }
     }
 
-    public function getallInvoices($perPage = 10)
+    public function getInvoices($filters, $perPage = 10)
     {
         try {
-            $invoices = $this->InvoiceRepo->getAllInvoices($perPage);
+            $invoices = $this->InvoiceRepo->getInvoices($filters, $perPage);
             return [
                 'data' => $invoices->map([$this, 'transformInvoice'])->toArray(),
                 'pagination' => [
@@ -50,6 +50,7 @@ class InvoicesServices
             echo $e->getMessage();
         }
     }
+
 
     public function getInvoiceByNumber($invoiceNumber)
     {

@@ -12,7 +12,7 @@
           </div>
         </div>
       </div>
-      <div class="block w-full overflow-x-auto">
+      <div v-if="invoices.length > 0" class="block w-full overflow-x-auto">
         <!-- Invoices table -->
         <table class="items-center w-full bg-transparent border-collapse">
           <thead>
@@ -75,7 +75,10 @@
           </tbody>
         </table>
       </div>
-      <div class="px-5 py-3 flex justify-center">
+      <div v-else class="text-center py-10">
+        <span class="text-gray-500">No records found.</span>
+      </div>
+      <div v-if="invoices.length > 0" class="px-5 py-3 flex justify-center">
         <ul class="inline-flex items-center space-x-2">
           <li v-for="page in visiblePages()" :key="page" class="pagination-button cursor-pointer" :class="{ 'active': page === currentPage }" @click="page !== '...' && goToPage(page)">
             <span v-if="page !== '...'">{{ page }}</span>
@@ -104,7 +107,8 @@
         validator: function (value) {
           return ["light", "dark"].indexOf(value) !== -1;
         },
-      }
+      },
+      filters: Object,
     },
     data() {
       return {
@@ -112,27 +116,52 @@
         currentPage: 1,
         pageSize: 8,
         totalInvoices: 0,
+        currentFilters: {}, // Store current filters to be used for fetching invoices
+        noRecordsFound: false, // Indicates no records found
       };
     },
-    mounted() {
-      this.fetchInvoices();
+    watch: {
+      filters: {
+        handler(newFilters) {
+          this.currentFilters = newFilters; // Update currentFilters with the new ones
+          this.fetchFilteredInvoices(); // Fetch with updated filters
+        },
+        deep: true,
+        immediate: true
+      }
     },
     methods: {
-      fetchInvoices() {
-        axios.get(`/invoices?page=${this.currentPage}&perPage=${this.pageSize}`)
+      fetchFilteredInvoices(filters) {
+        const params = {
+          page: this.currentPage,
+          perPage: this.pageSize,
+          ...this.currentFilters
+        };
+        axios.get(`/invoices`, { params })
           .then(response => {
+            if (response.data.status === 'Not Found') {
+            this.invoices = [];
+            this.noRecordsFound = true;
+            this.totalInvoices = 0; // Reset total invoices to hide pagination
+          } else {
             response =  response.data;
             this.invoices = response.data.data;
             this.totalInvoices = response.data.pagination.total;
+            this.noRecordsFound = false;
             this.pageSize = response.data.pagination.perPage;
+          }
+          
+            
           })
           .catch(error => {
             console.error('Error fetching invoices:', error);
+            this.invoices = [];
+            this.noRecordsFound = true;
           });
       },
       goToPage(page) {
         this.currentPage = page;
-        this.fetchInvoices();
+        this.fetchFilteredInvoices();
       },
       visiblePages() {
         let range = [];
