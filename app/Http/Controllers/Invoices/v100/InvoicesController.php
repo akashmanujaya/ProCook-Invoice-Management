@@ -16,9 +16,28 @@ class InvoicesController extends BaseController
         $this->invoiceService = $invoiceService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Your code here
+        try {
+            $perPage = $request->input('perPage', 10); // Default to 10 items per page
+            $invoices = $this->invoiceService->getallInvoices($perPage);
+            if (empty($invoices['data'])) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'No records available.'
+                ], 404);
+            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Invoices retreived successfully',
+                'data' => $invoices
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function show($id)

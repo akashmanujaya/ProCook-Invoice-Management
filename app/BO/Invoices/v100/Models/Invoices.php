@@ -2,7 +2,7 @@
 
 namespace App\BO\Invoices\v100\Models;
 
-use App\Base\Model\BaseModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
@@ -16,7 +16,7 @@ use Illuminate\Notifications\Notifiable;
  *
  * @package App\BO\Customers\v100\Models
  */
-class Invoices extends BaseModel
+class Invoices extends Model
 {
     use Notifiable, SoftDeletes;
 

@@ -4,21 +4,46 @@ namespace App\BO\Invoices\v100\Services;
 
 use App\Base\Exception\BaseException;
 use App\BO\Invoices\v100\Repositories\InvoicesRepository;
+use App\BO\Invoices\v100\Transformations\InvoiceTransformable;
 
 class InvoicesServices
 {
-   protected $repository;
+    use InvoiceTransformable;
 
-    public function __construct(InvoicesRepository $repository)
+    protected $InvoiceRepo;
+
+    public function __construct(InvoicesRepository $InvoiceRepo)
     {
-         $this->repository = $repository;
+         $this->InvoiceRepo = $InvoiceRepo;
     }
 
     public function createInvoice($data)
     {
         try {
-            $invoice = $this->repository->createInvoice($request);
-            return $invoice;
+            $invoice = $this->InvoiceRepo->createInvoice($data);
+            return $this->transformInvoice($invoice);
+        } catch (BaseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function getallInvoices($perPage = 10)
+    {
+        try {
+            $invoices = $this->InvoiceRepo->getAllInvoices($perPage);
+            return [
+                'data' => $invoices->map([$this, 'transformInvoice'])->toArray(),
+                'pagination' => [
+                    'total' => $invoices->total(),
+                    'perPage' => $invoices->perPage(),
+                    'currentPage' => $invoices->currentPage(),
+                    'lastPage' => $invoices->lastPage(),
+                    'from' => $invoices->firstItem(),
+                    'to' => $invoices->lastItem()
+                ]
+            ];
         } catch (BaseException $e) {
             throw $e;
         } catch (\Exception $e) {

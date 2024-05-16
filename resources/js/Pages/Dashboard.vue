@@ -1,9 +1,17 @@
 <script setup>
+import { onMounted } from 'vue';
+import { useStore } from 'vuex';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import InvoiceCreator from '@/Components/InvoiceCreator.vue';
 import InvoiceFilters from '@/Components/InvoiceFilters.vue';
 import InvoiceTable from '@/Components/InvoiceTable.vue';
+
+const store = useStore();
+
+onMounted(() => {
+  store.dispatch('fetchInvoices');
+});
 </script>
 
 <template>
@@ -17,9 +25,9 @@ import InvoiceTable from '@/Components/InvoiceTable.vue';
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <InvoiceCreator />
+                    <InvoiceCreator @invoice-created="invoice => store.dispatch('createInvoice', invoice)" />
                     <InvoiceFilters />
-                    <InvoiceTable />
+                    <InvoiceTable :invoices="store.getters.allInvoices" />
                 </div>
             </div>
         </div>

@@ -10,21 +10,29 @@
         <h3 class="font-semibold text-lg mb-10">Create New Invoice</h3>
         <!-- Form for creating a new invoice -->
         <v-form>
-          <v-text-field v-model="invoice.firstName" label="First Name" outlined></v-text-field>
-          <v-text-field v-model="invoice.lastName" label="Last Name" outlined></v-text-field>
+          <v-text-field required v-model="invoice.firstName" label="First Name" outlined :error-messages="errors.first_name"></v-text-field>
+          <v-text-field v-model="invoice.lastName" label="Last Name" outlined :error-messages="errors.last_name"></v-text-field>
 
           <!-- Vue 3 Datepicker for Invoice Date -->
-          <VueDatePicker v-model="invoice.invoiceDate" :config="{ type: 'date' }" class="mb-2"></VueDatePicker>
+          <VueDatePicker v-model="invoice.invoiceDate" :config="{ type: 'datetime' }" class="mb-2" :error-messages="errors.invoice_date"></VueDatePicker>
 
-          <v-text-field v-model="invoice.paymentTerm" label="Payment Term" type="number" :rules="paymentTermRules" outlined></v-text-field>
+          <v-text-field v-model="invoice.paymentTerm" label="Payment Term" type="number" :rules="paymentTermRules" outlined :error-messages="errors.payment_term"></v-text-field>
 
           <!-- Vue 3 Datepicker for Due Date -->
-          <VueDatePicker v-model="invoice.dueDate" :config="{ type: 'date' }"  class="mb-2"></VueDatePicker>
+          <VueDatePicker v-model="invoice.dueDate" :config="{ type: 'datetime' }"  class="mb-2" :error-messages="errors.due_date"></VueDatePicker>
 
-          <v-textarea v-model="invoice.description" label="Description" :counter="3000" outlined></v-textarea>
-          <v-text-field v-model="invoice.totalAmount" label="Total Amount" prefix="$" type="number" step="0.01" outlined></v-text-field>
+          <v-textarea v-model="invoice.description" label="Description" :counter="3000" outlined :error-messages="errors.description"></v-textarea>
+          <v-text-field v-model="invoice.totalAmount" label="Total Amount" prefix="$" type="number" step="0.01" outlined :error-messages="errors.total_amount"></v-text-field>
           <div class="flex items-center justify-between">
-            <v-btn color="blue darken-1" text @click="createInvoice">Save Invoice</v-btn>
+            <v-btn
+              :disabled="loading"
+              :loading="loading"
+              color="blue darken-1"
+              text
+              @click="createInvoice"
+            >
+              Save Invoice
+            </v-btn>
             <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
           </div>
         </v-form>
@@ -40,6 +48,7 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { VForm, VTextField, VTextarea, VBtn } from 'vuetify/components';
 import 'vuetify/styles' 
+import moment from 'moment';
 
 const isModalOpen = ref(false);
 const invoice = ref({
@@ -51,6 +60,9 @@ const invoice = ref({
   description: '',
   totalAmount: '',
 });
+const errors = ref({});
+const loading = ref(false);
+
 
 let stopWatch; // Variable to hold the stop function for the watcher
 
@@ -79,14 +91,57 @@ function closeModal() {
 }
 
 function createInvoice() {
-  console.log('Invoice Data:', invoice.value);
-  closeModal();
+  loading.value = true;
+
+  const formattedInvoiceDate = moment(invoice.value.invoiceDate).format("YYYY-MM-DDTHH:mm:ss");
+  const formattedDueDate = moment(invoice.value.dueDate).format("YYYY-MM-DDTHH:mm:ss");
+
+    axios.post('/invoices', {
+      first_name: invoice.value.firstName,
+      last_name: invoice.value.lastName,
+      invoice_date: formattedInvoiceDate,
+      due_date: formattedDueDate,
+      payment_term: invoice.value.paymentTerm,
+      description: invoice.value.description,
+      total_amount: invoice.value.totalAmount,
+    })
+    .then(response => {
+        if (response.data.status === 'success') {
+            alert(response.data.message); // Or use a more sophisticated notification system
+            loading.value = false;
+            setDefaultvalues();
+            closeModal();
+            errors.value = {}; // Clear any old errors
+        }
+    })
+    .catch(error => {
+        if (error.response && error.response.status === 422) {
+            errors.value = error.response.data.errors;
+        } else {
+            console.error('Error creating invoice:', error);
+            alert('Error creating invoice: ' + (error.response.data.message || 'Unknown error'));
+        }
+
+        loading.value = false; // Stop loading
+    });
 }
 
 onUnmounted(() => {
   // Stop watching when the component is unmounted
   stopWatch();
 });
+
+function setDefaultvalues() {
+  invoice.value = {
+    firstName: '',
+    lastName: '',
+    invoiceDate: new Date(),
+    dueDate: new Date(),
+    paymentTerm: 30,
+    description: '',
+    totalAmount: '',
+  };
+}
 </script>
 
 <style scoped>
