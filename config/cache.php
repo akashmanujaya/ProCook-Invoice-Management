@@ -78,6 +78,7 @@ return [
             'driver' => 'redis',
             'connection' => 'cache',
             'lock_connection' => 'default',
+            'log' => env('CACHE_LOG', false), // Add this line to enable logging
         ],
 
         'dynamodb' => [

@@ -5,6 +5,7 @@ namespace App\BO\Invoices\v100\Repositories;
 use App\BO\Invoices\v100\Exceptions\InvoiceNotFoundException;
 use App\BO\Invoices\v100\Models\Invoices;
 use App\BO\Invoices\v100\Repositories\Interfaces\InvoicesReporitoryInterface;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 use function App\Helpers\calculateDueDate;
@@ -79,40 +80,44 @@ class InvoicesRepository implements InvoicesReporitoryInterface
      * @return \Illuminate\Pagination\LengthAwarePaginator The paginated list of invoices.
      */
     public function getInvoices($filters, $perPage = 10)
-    { 
-        try {
-            $query = $this->model->newQuery();
+    {
+        $cacheKey = "invoices_" . md5(json_encode($filters)) . "_$perPage";
+        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($filters, $perPage) {
+            Log::info("Cache miss for invoices with filters: " . json_encode($filters));
+            try {
+                $query = $this->model->newQuery();
 
-            // Filter by customer name using first_name and last_name
-            if (!empty($filters['customerName'])) {
-                $query->where(function ($q) use ($filters) {
-                    $q->where('first_name', 'like', '%' . $filters['customerName'] . '%')
-                    ->orWhere('last_name', 'like', '%' . $filters['customerName'] . '%');
-                });
+                // Filter by customer name using first_name and last_name
+                if (!empty($filters['customerName'])) {
+                    $query->where(function ($q) use ($filters) {
+                        $q->where('first_name', 'like', '%' . $filters['customerName'] . '%')
+                            ->orWhere('last_name', 'like', '%' . $filters['customerName'] . '%');
+                    });
+                }
+
+                // Filter by start date
+                if (!empty($filters['startDate'])) {
+                    $query->whereDate('invoice_date', '>=', $filters['startDate']);
+                }
+
+                // Filter by end date
+                if (!empty($filters['endDate'])) {
+                    $query->whereDate('invoice_date', '<=', $filters['endDate']);
+                }
+
+                // Filter by payment status
+                if ($filters['paidStatus'] !== '') {
+                    $query->where('status', $filters['paidStatus']);
+                }
+
+                // Order by most recent and paginate results
+                return $query->orderBy('created_at', 'desc')->paginate($perPage);
+            } catch (\Exception $e) {
+                // Handle any errors that occur during the query execution
+                report($e);
+                return response()->json(['error' => 'Failed to retrieve filtered invoices'], 500);
             }
-
-            // Filter by start date
-            if (!empty($filters['startDate'])) {
-                $query->whereDate('invoice_date', '>=', $filters['startDate']);
-            }
-
-            // Filter by end date
-            if (!empty($filters['endDate'])) {
-                $query->whereDate('invoice_date', '<=', $filters['endDate']);
-            }
-
-            // Filter by payment status
-            if ($filters['paidStatus'] !== '') {
-                $query->where('status', $filters['paidStatus']);
-            }
-
-            // Order by most recent and paginate results
-            return $query->orderBy('created_at', 'desc')->paginate($perPage);
-        } catch (\Exception $e) {
-            // Handle any errors that occur during the query execution
-            report($e);
-            return response()->json(['error' => 'Failed to retrieve filtered invoices'], 500);
-        }
+        });
     }
 
     /**
@@ -128,6 +133,9 @@ class InvoicesRepository implements InvoicesReporitoryInterface
             $data = calculateDueDate($data);    
             $data['invoice_number'] = $this->generateInvoiceNumber();
             $invoice = $this->model->create($data);
+
+            Cache::flush();
+
             return $invoice;
         } catch (\Exception $e) {
             echo $e->getMessage();

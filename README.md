@@ -9,14 +9,18 @@ This project is designed to demonstrate a robust invoice management system using
 
 - **Docker Environment**: Simplifies the setup and deployment by containerizing the application and its environment.
 - **Laravel Passport**: Secures API endpoints using Access Tokens, ensuring that only authenticated users can access certain operations.
+- **Vue.js**: A progressive JavaScript framework used for building the frontend user interface.
+- **Redis**: Used for caching data to improve application performance by reducing database load and speeding up response times.
 
 ## Project Requirements
 
 - Composer >= 2.6.6
 - PHP >= 8.2
+- MySQL >= 8.0
 - Node >= 20.11.0
 - Npm >= 10.2.4
 - Laravel >= 10.10
+- Redis (Latest Version)
 
 ## Installation Steps Using Docker
 
