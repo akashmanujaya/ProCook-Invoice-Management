@@ -24,7 +24,12 @@ This project is designed to demonstrate a robust invoice management system using
 2. **Navigate to the Project Directory**: `cd ProCook-Invoice-Management`
 3. **Build and Start Docker Containers**: `docker-compose up -d --build`
 
-After running this command, your containers will be built. Please wait a few seconds until the container runs all the commands inside the terminal. Check your container terminal for logs. After successful installation of all packages, the application will be available at http://0.0.0.0:8000.
+After running this command, your containers will be built. Please wait a few seconds until the container runs all the commands inside the terminal. Check your container terminal for logs.
+
+4. **Access the Container's Shell**: `docker exec -it aml-procook-invoice-management /bin/bash`
+5. **Generate the Passport keys**: `php artisan passport:install` (This might ask some questions when you are installing. please type `yes` for that)
+
+After successful installation of all packages, the application will be available at http://0.0.0.0:8000.
 
 4. **Access the Application**: Open your web browser and visit http://0.0.0.0:8000.
 
@@ -40,6 +45,7 @@ After running this command, your containers will be built. Please wait a few sec
     - **Generate an application key**: `php artisan key:generate`
 6. **Build Assets**: `npm run build`
 7. **Run the database migration**: `php artisan migrate:refresh --seed` (make sure seeds have been run)
+8. **Generate the Passport keys**: `php artisan passport:install` (This might ask some questions when you are installing. please type `yes` for that)
 8. **Serve the Application**: `php artisan serve`
 
 Then, access the application at http://127.0.0.1:8000/
