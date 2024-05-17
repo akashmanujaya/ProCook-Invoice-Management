@@ -49,7 +49,7 @@ After successful installation of all packages, the application will be available
 4. **Install NPM Packages**: `npm install`
 5. **Set Up Environment**
     - **Copy the example environment file**: `cp .env.example .env`
-    - **Check the .env file and update the database credentials**
+    - **Check the .env file and update the database credentials and Redis Connection details**
     - **Generate an application key**: `php artisan key:generate`
 6. **Build Assets**: `npm run build`
 7. **Run the database migration**: `php artisan migrate:refresh --seed` (make sure seeds have been run)
