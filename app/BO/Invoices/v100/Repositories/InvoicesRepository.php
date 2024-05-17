@@ -7,6 +7,9 @@ use App\BO\Invoices\v100\Models\Invoices;
 use App\BO\Invoices\v100\Repositories\Interfaces\InvoicesReporitoryInterface;
 use Illuminate\Support\Facades\Log;
 
+use function App\Helpers\calculateDueDate;
+use function App\Helpers\sanitizeInput;
+
 /**
  * Class InvoicesRepository
  *
@@ -121,6 +124,8 @@ class InvoicesRepository implements InvoicesReporitoryInterface
     public function createInvoice(array $data)
     {
         try {
+            $data  = sanitizeInput($data);
+            $data = calculateDueDate($data);    
             $data['invoice_number'] = $this->generateInvoiceNumber();
             $invoice = $this->model->create($data);
             return $invoice;
@@ -139,7 +144,13 @@ class InvoicesRepository implements InvoicesReporitoryInterface
     public function updateInvoice(array $data, $invoiceNumber)
     {
         try {
+            $data  = sanitizeInput($data);
+            $data = calculateDueDate($data);   
             $invoice = $this->model->where('invoice_number', $invoiceNumber)->first();
+
+            if (!$invoice) {
+                return null;
+            }
             $invoice->update($data);
             return $invoice;
         } catch (\Exception $e) {
@@ -175,6 +186,9 @@ class InvoicesRepository implements InvoicesReporitoryInterface
     {
         try {
             $invoice = $this->model->where('invoice_number', $invoiceNumber)->first();
+            if (!$invoice) {
+                return null;
+            }
             $invoice->delete();
             return $invoice;
         } catch (\Exception $e) {

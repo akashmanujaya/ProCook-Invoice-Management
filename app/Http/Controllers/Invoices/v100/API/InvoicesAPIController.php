@@ -125,7 +125,11 @@ class InvoicesAPIController extends BaseController
     public function destroy($id)
     {
         try {
-            $this->invoiceService->deleteInvoice($id);
+            
+            $invoice = $this->invoiceService->deleteInvoice($id);
+            if (!$invoice) {
+                return ApiResponse::error('Invoice not found', 404);
+            }
             return ApiResponse::send(null, 'Invoice deleted successfully');
         } catch (\Exception $e) {
             return ApiResponse::error('Error deleting invoice: ' . $e->getMessage(), 500);

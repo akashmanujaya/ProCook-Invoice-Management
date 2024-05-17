@@ -5,10 +5,8 @@ namespace Tests\Feature;
 use App\BO\Invoices\v100\Models\Invoices;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Passport\Passport;
-use Tests\TestCase;
 
-class InvoicesControllerTest extends TestCase
+class InvoicesControllerTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

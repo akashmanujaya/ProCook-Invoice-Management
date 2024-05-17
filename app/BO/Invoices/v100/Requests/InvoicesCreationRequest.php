@@ -30,7 +30,7 @@ class InvoicesCreationRequest extends FormRequest
             'description' => 'nullable|string|max:3000',
             'payment_term' => 'required|integer|min:1|max:100',
             'invoice_date' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:invoice_date',
+            'due_date' => 'nullable|date|after_or_equal:invoice_date',
             'total_amount' => 'required|numeric|between:0,99999999.99',  // This supports up to 8 digits before the decimal and 2 digits after the decimal
         ];
     }
@@ -54,7 +54,6 @@ class InvoicesCreationRequest extends FormRequest
             'payment_term.max' => 'Payment term may not be greater than 100.',
             'invoice_date.required' => 'Invoice date is required.',
             'invoice_date.date' => 'Invoice date must be a valid date.',
-            'due_date.required' => 'Due date is required.',
             'due_date.date' => 'Due date must be a valid date.',
             'due_date.after_or_equal' => 'Due date must be on or after the invoice date.',
             'total_amount.required' => 'Total amount is required.',

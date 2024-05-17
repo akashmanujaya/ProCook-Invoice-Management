@@ -155,6 +155,9 @@ class InvoicesServices
     {
         try {
             $invoice = $this->InvoiceRepo->deleteInvoice($invoiceNumber);
+            if (!$invoice) {
+                return null;
+            }
             return $this->transformInvoice($invoice);
         } catch (BaseException $e) {
             throw $e;
