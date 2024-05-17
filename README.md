@@ -27,11 +27,15 @@ This project is designed to demonstrate a robust invoice management system using
 After running this command, your containers will be built. Please wait a few seconds until the container runs all the commands inside the terminal. Check your container terminal for logs.
 
 4. **Access the Container's Shell**: `docker exec -it aml-procook-invoice-management /bin/bash`
-5. **Generate the Passport keys**: `php artisan passport:install` (This might ask some questions when you are installing. please type `yes` for that)
+5. **Generate the Passport keys and migrations**: `php artisan passport:install` (This might ask some questions when you are installing. please type `yes` for that to install migrations)
 
 After successful installation of all packages, the application will be available at http://0.0.0.0:8000.
 
 4. **Access the Application**: Open your web browser and visit http://0.0.0.0:8000.
+
+5. **Sample User Details**
+    - **Email:** `user@procook.com`
+    - **Password:** `12345678`
 
 ## Installation Steps Without Docker
 

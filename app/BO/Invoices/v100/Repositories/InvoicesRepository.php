@@ -168,6 +168,9 @@ class InvoicesRepository implements InvoicesReporitoryInterface
     {
         try {
             $invoice = $this->model->where('invoice_number', $invoiceNumber)->first();
+            if (!$invoice) {
+                return null;
+            }
             $invoice->status = !$invoice->status;
             $invoice->save();
             return $invoice;

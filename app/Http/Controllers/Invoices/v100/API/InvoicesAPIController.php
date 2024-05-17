@@ -146,6 +146,9 @@ class InvoicesAPIController extends BaseController
     {
         try {
             $invoice = $this->invoiceService->toggleStatus($invoiceNumber);
+            if (!$invoice) {
+                return ApiResponse::error('Invoice not found', 404);
+            }
             return ApiResponse::send($invoice, 'Invoice status updated successfully');
         } catch (\Exception $e) {
             return ApiResponse::error('Error updating invoice status: ' . $e->getMessage(), 500);

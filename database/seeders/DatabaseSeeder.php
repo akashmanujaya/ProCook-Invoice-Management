@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Call the PassportClientSeeder
-        $this->call(PassportClientSeeder::class);
+        // User seeder
+        $this->call(UserSeeder::class);
     }
 }

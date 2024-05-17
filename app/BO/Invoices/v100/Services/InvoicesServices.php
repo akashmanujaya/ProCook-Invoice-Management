@@ -135,6 +135,9 @@ class InvoicesServices
     {
         try {
             $invoice = $this->InvoiceRepo->toggleStatus($invoiceNumber);
+            if (!$invoice) {
+                return null;
+            }
             return $this->transformInvoice($invoice);
         } catch (BaseException $e) {
             throw $e;
