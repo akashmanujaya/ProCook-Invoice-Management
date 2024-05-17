@@ -3,7 +3,6 @@
 use App\Http\Controllers\Invoices\v100\API\InvoicesAPIController;
 use Illuminate\Support\Facades\Route;
 
-
 /**
  * API Routes for Invoice Management.
  *
@@ -12,9 +11,10 @@ use Illuminate\Support\Facades\Route;
  * The routes are dynamically namespaced to support versioning.
  */
 Route::prefix('invoices')->namespace('Invoices\\' . $version)->group(function () {
-    Route::get('/', [InvoicesAPIController::class, 'index']); // List all invoices
+    Route::get('/', [InvoicesAPIController::class, 'index']); // List all invoices with filters
     Route::post('/', [InvoicesAPIController::class, 'store']); // Create a new invoice
-    Route::get('/{id}', [InvoicesAPIController::class, 'show']); // Show a single invoice
+    Route::post('/toggle-status/{invoiceNumber}', [InvoicesAPIController::class, 'toggleStatus']); // Create a new invoice
+    Route::get('/{invoiceNumber}', [InvoicesAPIController::class, 'show']); // Show a single invoice
     Route::put('/{id}', [InvoicesAPIController::class, 'update']); // Update an existing invoice
     Route::delete('/{id}', [InvoicesAPIController::class, 'destroy']); // Delete an invoice
 });

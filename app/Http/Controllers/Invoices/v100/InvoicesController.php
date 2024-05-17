@@ -8,15 +8,36 @@ use App\BO\Invoices\v100\Requests\InvoiceUpdateRequest;
 use App\BO\Invoices\v100\Services\InvoicesServices;
 use Illuminate\Http\Request;
 
+/**
+ * Class InvoicesController
+ *
+ * This controller handles CRUD operations and status toggling for invoices.
+ *
+ * @package App\Http\Controllers\Invoices\v100
+ */
 class InvoicesController extends BaseController
 {
+    /**
+     * @var InvoicesServices
+     */
     protected $invoiceService;
 
+    /**
+     * InvoicesController constructor.
+     *
+     * @param InvoicesServices $invoiceService
+     */
     public function __construct(InvoicesServices $invoiceService)
     {
         $this->invoiceService = $invoiceService;
     }
 
+    /**
+     * Display a listing of the invoices.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
     {
         try {
@@ -49,6 +70,12 @@ class InvoicesController extends BaseController
         }
     }
 
+    /**
+     * Display the specified invoice.
+     *
+     * @param string $invoiceNumber
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($invoiceNumber)
     {
         try {
@@ -74,6 +101,12 @@ class InvoicesController extends BaseController
         }
     }
 
+    /**
+     * Store a newly created invoice in storage.
+     *
+     * @param InvoicesCreationRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(InvoicesCreationRequest $request)
     {
         try {
@@ -93,6 +126,13 @@ class InvoicesController extends BaseController
         }
     }
 
+    /**
+     * Update the specified invoice in storage.
+     *
+     * @param InvoiceUpdateRequest $request
+     * @param string $invoiceNumber
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(InvoiceUpdateRequest $request, $invoiceNumber)
     {
         try {
@@ -112,6 +152,12 @@ class InvoicesController extends BaseController
         }
     }
 
+    /**
+     * Toggle the status of the specified invoice.
+     *
+     * @param string $invoiceNumber
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function toggleStatus($invoiceNumber)
     {
         try {
@@ -131,6 +177,12 @@ class InvoicesController extends BaseController
         }
     }
 
+    /**
+     * Remove the specified invoice from database.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy($id)
     {
        try {

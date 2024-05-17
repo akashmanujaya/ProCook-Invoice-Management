@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Invoices\v100\InvoicesController;
 
 /**
- * API Routes for Invoice Management.
+ * Frontend Routes for Invoice Management.
  *
  * These routes handle the API endpoints for managing invoices. They are prefixed with
  * 'api/invoices' and make use of the InvoicesController to handle requests.

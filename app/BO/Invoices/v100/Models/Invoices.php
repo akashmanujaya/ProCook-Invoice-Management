@@ -2,6 +2,8 @@
 
 namespace App\BO\Invoices\v100\Models;
 
+use Database\Factories\InvoicesFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -18,7 +20,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class Invoices extends Model
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable, SoftDeletes, HasFactory;
 
     /**
      * The table associated with the model.
@@ -44,9 +46,24 @@ class Invoices extends Model
         'payment_term', 'due_date', 'description', 'total_amount', 'status'
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
     protected $casts = [
         'invoice_date' => 'datetime',
         'due_date' => 'datetime',
         'status' => 'boolean'
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return new InvoicesFactory();
+    }	
 }

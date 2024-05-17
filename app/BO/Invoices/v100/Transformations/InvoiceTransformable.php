@@ -2,8 +2,21 @@
 
 namespace App\BO\Invoices\v100\Transformations;
 
+/**
+ * Trait InvoiceTransformable
+ *
+ * This trait provides methods to transform invoice data into a consistent format.
+ *
+ * @package App\BO\Invoices\v100\Transformations
+ */
 trait InvoiceTransformable
 {
+    /**
+     * Transform the given invoice data.
+     *
+     * @param \App\BO\Invoices\v100\Models\Invoices $invoice The invoice model instance.
+     * @return array The transformed invoice data.
+     */
     public function transformInvoice($invoice)
     {
         return [

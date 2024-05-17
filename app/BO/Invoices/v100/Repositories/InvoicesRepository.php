@@ -2,28 +2,60 @@
 
 namespace App\BO\Invoices\v100\Repositories;
 
+use App\BO\Invoices\v100\Exceptions\InvoiceNotFoundException;
 use App\BO\Invoices\v100\Models\Invoices;
 use App\BO\Invoices\v100\Repositories\Interfaces\InvoicesReporitoryInterface;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * Class InvoicesRepository
+ *
+ * This repository handles data access logic for invoices, including
+ * creating, retrieving, updating, and deleting invoices, as well as generating invoice numbers.
+ *
+ * @package App\BO\Invoices\v100\Repositories
+ */
 class InvoicesRepository implements InvoicesReporitoryInterface
 {
+    /**
+     * @var Invoices
+     */
     protected $model;
 
+    /**
+     * InvoicesRepository constructor.
+     *
+     * @param Invoices $model The invoice model.
+     */
     public function __construct(Invoices $model)
     {
         $this->model = $model;
     }
 
+    /**
+     * Find an invoice by its number.
+     *
+     * @param string $invoiceNumber The invoice number.
+     * @return Invoices|null The found invoice or null if not found.
+     */
     public function findByNumber($invoiceNumber)
     {
         try {
             $invoice = $this->model->where('invoice_number', $invoiceNumber)->first();
             return $invoice;
-        } catch (\Exception $e) {
+        } catch (InvoiceNotFoundException $e) {
+            Log::error($e->getMessage());
+        }
+        catch (\Exception $e) {
             echo $e->getMessage();
         }
     }
 
+    /**
+     * Generate a new unique invoice number.
+     *
+     * @return string The generated invoice number.
+     */
     public function generateInvoiceNumber()
     {
         try {
@@ -36,8 +68,15 @@ class InvoicesRepository implements InvoicesReporitoryInterface
         }
     }
 
+    /**
+     * Retrieve a paginated list of invoices based on filters.
+     *
+     * @param array $filters The filters for retrieving invoices.
+     * @param int $perPage The number of invoices per page.
+     * @return \Illuminate\Pagination\LengthAwarePaginator The paginated list of invoices.
+     */
     public function getInvoices($filters, $perPage = 10)
-    {
+    { 
         try {
             $query = $this->model->newQuery();
 
@@ -60,7 +99,7 @@ class InvoicesRepository implements InvoicesReporitoryInterface
             }
 
             // Filter by payment status
-            if (!empty($filters['paidStatus'])) {
+            if ($filters['paidStatus'] !== '') {
                 $query->where('status', $filters['paidStatus']);
             }
 
@@ -73,6 +112,12 @@ class InvoicesRepository implements InvoicesReporitoryInterface
         }
     }
 
+    /**
+     * Create a new invoice.
+     *
+     * @param array $data The data for the new invoice.
+     * @return Invoices The created invoice.
+     */
     public function createInvoice(array $data)
     {
         try {
@@ -84,6 +129,13 @@ class InvoicesRepository implements InvoicesReporitoryInterface
         }
     }
 
+    /**
+     * Update an existing invoice.
+     *
+     * @param array $data The updated data for the invoice.
+     * @param string $invoiceNumber The invoice number.
+     * @return Invoices The updated invoice.
+     */
     public function updateInvoice(array $data, $invoiceNumber)
     {
         try {
@@ -95,6 +147,12 @@ class InvoicesRepository implements InvoicesReporitoryInterface
         }
     }
 
+    /**
+     * Toggle the status of an invoice.
+     *
+     * @param string $invoiceNumber The invoice number.
+     * @return Invoices The invoice with the updated status.
+     */
     public function toggleStatus($invoiceNumber)
     {
         try {
@@ -107,6 +165,12 @@ class InvoicesRepository implements InvoicesReporitoryInterface
         }
     }
 
+    /**
+     * Delete an invoice by its number.
+     *
+     * @param string $invoiceNumber The invoice number.
+     * @return Invoices The deleted invoice.
+     */
     public function deleteInvoice($invoiceNumber)
     {
         try {

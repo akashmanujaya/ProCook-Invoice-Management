@@ -63,7 +63,12 @@
     isModalOpen.value = true;
     const convereted_invoice_date = convertToISOString(invoiceDetails.invoice_date);
     const convereted_due_date = convertToISOString(invoiceDetails.due_date);
-    invoice.value = {...invoiceDetails,invoice_date: convereted_invoice_date,due_date: convereted_due_date};
+    invoice.value = {
+      ...invoiceDetails,
+      invoice_date: convereted_invoice_date,
+      due_date: convereted_due_date, 
+      total_amount: convertFormattedNumber(invoiceDetails.total_amount)
+    };
 
     stopWatch = watch([() => invoice.value.invoice_date, () => invoice.value.payment_term], () => {
         if (!invoice.value.invoice_date || !invoice.value.payment_term) {
@@ -87,6 +92,15 @@
   function closeModal() {
     isModalOpen.value = false;
   }
+
+  function convertFormattedNumber(formattedNumber) {
+    // Remove commas from the string
+    const plainNumberString = formattedNumber.replace(/,/g, '');
+    // Convert the string to a number
+    const plainNumber = parseFloat(plainNumberString);
+    return plainNumber;
+  }
+
   
   function updateInvoice() {
     loading.value = true;
