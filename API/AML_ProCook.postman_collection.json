@@ -1,0 +1,536 @@
+{
+	"info": {
+		"_postman_id": "4d64d846-5e1e-4b45-b882-39a3d632562f",
+		"name": "ProCook",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10325676"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body",
+									"let jsonData = pm.response.json();",
+									"",
+									"// Check if the response has the expected structure",
+									"if (jsonData && jsonData.status && jsonData.data && jsonData.data.token) {",
+									"    // Set the token environment variable",
+									"    pm.environment.set(\"Token\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "john@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body",
+									"let jsonData = pm.response.json();",
+									"",
+									"// Check if the response has the expected structure",
+									"if (jsonData && jsonData.status && jsonData.data && jsonData.data.token) {",
+									"    // Set the token environment variable",
+									"    pm.environment.set(\"Token\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "John Doe",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "john@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "password123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/logout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/profile",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoices",
+			"item": [
+				{
+					"name": "Get All Invoice (With or without filters)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/invoices?page=1&perPage=8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"invoices"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "perPage",
+									"value": "8"
+								},
+								{
+									"key": "customerName",
+									"value": "aml",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "2024-05-08",
+									"description": "Date format should be YYYY-MM-DD",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "2024-05-17",
+									"description": "Date format should be YYYY-MM-DD",
+									"disabled": true
+								},
+								{
+									"key": "paidStatus",
+									"value": "0",
+									"description": "Paid = 1, Pending = 0, All = (Keep empty)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/invoices/INV-001",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"invoices",
+								"INV-001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "ProCook",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Developer",
+									"type": "text"
+								},
+								{
+									"key": "invoice_date",
+									"value": "2024-05-17T01:25:27",
+									"description": "Format Should be `YYYY-MM-DDTHH:MM:SS`",
+									"type": "text"
+								},
+								{
+									"key": "payment_term",
+									"value": "30",
+									"description": "Should be whole interger and 1 <= payment_term <= 100",
+									"type": "text"
+								},
+								{
+									"key": "due_date",
+									"value": "2024-07-05T01:25:27",
+									"description": "Optional: If this is empty, it will be calucalted automatically based on the invoice date and payment term",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Lorem Ipsum Lorem Ipsum",
+									"type": "text"
+								},
+								{
+									"key": "total_amount",
+									"value": "10000",
+									"description": "Between:0,99999999.99",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/invoices",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"invoices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/invoices/toggle-status/INV-001",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"invoices",
+								"toggle-status",
+								"INV-001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "first_name",
+									"value": "ProCook -01",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Developer",
+									"type": "text"
+								},
+								{
+									"key": "invoice_date",
+									"value": "2024-05-17T01:25:27",
+									"type": "text"
+								},
+								{
+									"key": "payment_term",
+									"value": "30",
+									"type": "text"
+								},
+								{
+									"key": "due_date",
+									"value": "2024-07-05T01:25:27",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Lorem Ipsum Lorem Ipsum",
+									"type": "text"
+								},
+								{
+									"key": "total_amount",
+									"value": "10000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/invoices/INV-001",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"invoices",
+								"INV-001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "PKlMhaY59u5Nj4FidxLBQzRzeKtciz4IiK8GRjZB0FZAJx1QcX559AtVnJVe1EsL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/invoices/INV-020",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"invoices",
+								"INV-020"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

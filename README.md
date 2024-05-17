@@ -1,66 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# ProCook Invoice Management System
 
-## About Laravel
+## Introduction
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This project is designed to demonstrate a robust invoice management system using Laravel, which handles invoice creation, updating, listing, and deletion securely and efficiently. It includes authentication for API access, a Vue.js frontend for interacting with invoices, and utilizes Docker for easy setup and deployment.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technologies Used
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Docker Environment**: Simplifies the setup and deployment by containerizing the application and its environment.
+- **Laravel Passport**: Secures API endpoints using Access Tokens, ensuring that only authenticated users can access certain operations.
 
-## Learning Laravel
+## Project Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Composer >= 2.6.6
+- PHP >= 8.2
+- Node >= 20.11.0
+- Npm >= 10.2.4
+- Laravel >= 10.10
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Installation Steps Using Docker
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Clone the repo**: `git clone https://github.com/akashmanujaya/ProCook-Invoice-Management.git`
+2. **Navigate to the Project Directory**: `cd ProCook-Invoice-Management`
+3. **Build and Start Docker Containers**: `docker-compose up -d --build`
 
-## Laravel Sponsors
+After running this command, your containers will be built. Please wait a few seconds until the container runs all the commands inside the terminal. Check your container terminal for logs. After successful installation of all packages, the application will be available at http://0.0.0.0:8000.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4. **Access the Application**: Open your web browser and visit http://0.0.0.0:8000.
 
-### Premium Partners
+## Installation Steps Without Docker
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+1. **Clone the Repository**
+2. **Navigate to the Project Directory**
+3. **Install Composer Dependencies**: `composer install`
+4. **Install NPM Packages**: `npm install`
+5. **Set Up Environment**
+    - **Copy the example environment file**: `cp .env.example .env`
+    - **Check the .env file and update the database credentials**
+    - **Generate an application key**: `php artisan key:generate`
+6. **Build Assets**: `npm run build`
+7. **Run the database migration**: `php artisan migrate:refresh --seed` (make sure seeds have been run)
+8. **Serve the Application**: `php artisan serve`
 
-## Contributing
+Then, access the application at http://127.0.0.1:8000/
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Why Authentication even it's not required?
 
-## Code of Conduct
+Authentication and authorization have been integrated into the application to ensure secure access to the API endpoints. This is crucial to prevent unauthorized access and to protect sensitive data.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Application Program Interface (API)
 
-## Security Vulnerabilities
+To run and test the API functionalities, use Postman, a popular tool for API testing. Follow these steps to set up and execute the API calls:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Import the Postman Collection and Environment**:
+    - Navigate to the `API` folder located in the project root.
+    - Import the `ProCook_Invoice_Management.postman_collection.json` into Postman, which contains all the API requests you need to interact with the application.
+    - Depending on your setup, import either the `ProCook_Invoice_Management_Docker.postman_environment.json` or `ProCook_Invoice_Management_Localhost.postman_environment.json` into Postman. These environment files configure Postman to point to the correct base URL and manage environmental variables.
 
-## License
+2. **Authentication**:
+    - Under the **Auth** folder in Postman, you will find the registration and login APIs.
+    - **Register**: If you do not have an account, use the registration request to create one. Fill in the required details such as name, email, and password.
+    - **Login**: If you already have an account, use the login request to authenticate. Upon successful authentication, the API will return an **Access Token**, which Postman is configured to automatically save to an environment variable called `Token`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3. **Using the Token and API Key**:
+    - This token and API Key are essential for making requests that require authentication. The Postman environment is set up to use this token automatically for all requests that need it, so you don't have to manually insert the token for each request.
+    - Ensure that the `Token` variable in your selected Postman environment is updated with the token received from the login response. This setup allows a seamless transition between logging in and using secured routes.
+
+4. **Accessing Secured Endpoints**:
+    - Navigate to the **Invoices** folder within the Postman collection.
+    - You have endpoints for all the CRUD operations and changing the status as well.
+
+5. **Testing**:
+    - Execute the requests in the order of registration (if needed), login, and then CRUD operations of invoices.
+    - Monitor the responses in Postman to ensure each step is successful. Check for HTTP status codes and response messages to diagnose any issues.
+
+6. **Environment Setup**:
+    - Make sure the environment in Postman correctly points to your local or Docker-based application instance.
+    - Double-check that the base URL in the Postman environment settings matches your running application’s URL (either `http://0.0.0.0:8000` for Docker or `http://127.0.0.1:8000` for a local setup).
+
+## Running Tests
+
+### Note for Testing Routes
+
+When running tests, you need to uncomment a section inside the `routes/api.php` and comment another section inside the same file. This is because there are routes imported using modules, and these routes are sometimes not recognized when you are running tests since those routes are inside the corresponding module.
+
+**You can see what to comment and what to uncomment inside the `routes/api.php` file.**
+
+### Using Docker Environment
+
+Docker environment testing is **not suitable** since the SQLite database and :memory sometimes do not work, causing test cases to fail due to the database connection being lost.
+
+1. **Access the Container's Shell**: `docker exec -it aml-procook-invoice-management /bin/bash`
+2. **Run the Tests**: `php artisan test`
+
+### In Non-Docker Environment
+
+Simply run the tests with the following command in your project root:
+
+`php artisan test`
