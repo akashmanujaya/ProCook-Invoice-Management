@@ -50,9 +50,10 @@ After successful installation of all packages, the application will be available
 6. **Build Assets**: `npm run build`
 7. **Run the database migration**: `php artisan migrate:refresh --seed` (make sure seeds have been run)
 8. **Generate the Passport keys**: `php artisan passport:install` (This might ask some questions when you are installing. please type `yes` for that)
-8. **Serve the Application**: `php artisan serve`
-
-Then, access the application at http://127.0.0.1:8000/
+8. **Serve the Application**: `php artisan serve`. Then, access the application at http://127.0.0.1:8000/
+9. **Sample User Details**
+    - **Email:** `user@procook.com`
+    - **Password:** `12345678`
 
 ## Why Authentication even it's not required?
 
