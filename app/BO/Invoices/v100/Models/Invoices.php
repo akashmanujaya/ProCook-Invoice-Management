@@ -5,7 +5,6 @@ namespace App\BO\Invoices\v100\Models;
 use Database\Factories\InvoicesFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 /**
@@ -20,7 +19,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class Invoices extends Model
 {
-    use Notifiable, SoftDeletes, HasFactory;
+    use Notifiable, HasFactory;
 
     /**
      * The table associated with the model.

@@ -159,7 +159,11 @@ class InvoicesRepository implements InvoicesReporitoryInterface
             if (!$invoice) {
                 return null;
             }
+
             $invoice->update($data);
+
+            Cache::flush();
+            
             return $invoice;
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -181,6 +185,9 @@ class InvoicesRepository implements InvoicesReporitoryInterface
             }
             $invoice->status = !$invoice->status;
             $invoice->save();
+
+            Cache::flush();
+
             return $invoice;
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -201,6 +208,7 @@ class InvoicesRepository implements InvoicesReporitoryInterface
                 return null;
             }
             $invoice->delete();
+            Cache::flush();
             return $invoice;
         } catch (\Exception $e) {
             echo $e->getMessage();

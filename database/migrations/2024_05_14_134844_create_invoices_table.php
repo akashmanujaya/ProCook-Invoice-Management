@@ -23,7 +23,6 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2);
             $table->boolean('status')->default(false);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
