@@ -64,7 +64,7 @@ class InvoicesRepository implements InvoicesReporitoryInterface
     {
         try {
             $lastInvoice = $this->model->orderBy('id', 'desc')->first();
-            $lastNumber = $lastInvoice ? ((int) substr($lastInvoice->invoice_number, 4)) : 0;
+            $lastNumber = $lastInvoice ? ((int) $lastInvoice->id) : 0;
 
             return 'INV-' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         } catch (\Exception $e) {
@@ -163,7 +163,7 @@ class InvoicesRepository implements InvoicesReporitoryInterface
             $invoice->update($data);
 
             Cache::flush();
-            
+
             return $invoice;
         } catch (\Exception $e) {
             echo $e->getMessage();
