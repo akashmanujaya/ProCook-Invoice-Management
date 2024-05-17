@@ -138,6 +138,13 @@ class InvoicesRepositoryTest extends TestCase
 
         $repository = new InvoicesRepository(new Invoices());
         $updateData = [
+            'invoice_number' => 'INV-001',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'invoice_date' => now(),
+            'payment_term' => 30,
+            'due_date' => now()->addDays(30),
+            'status' => 1,
             'description' => 'Updated Invoice Description',
             'total_amount' => 1200.00
         ];

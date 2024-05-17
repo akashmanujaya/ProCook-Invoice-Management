@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\BO\Invoices\v100\Models\Invoices;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 
 class InvoicesControllerTest extends FeatureTestCase
 {
@@ -17,7 +18,12 @@ class InvoicesControllerTest extends FeatureTestCase
     {
         parent::setUp();
 
-        $this->artisan('db:seed');
+        Passport::$hashesClientSecrets = false;
+
+        $this->artisan(
+            'passport:client', 
+            ['--name' => config('app.name'), '--personal' => null]
+        )->assertSuccessful();
 
         // Create user
         $this->user = User::factory()->create([
