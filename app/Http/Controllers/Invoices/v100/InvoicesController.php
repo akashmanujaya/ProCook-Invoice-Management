@@ -138,6 +138,13 @@ class InvoicesController extends BaseController
         try {
             $invoice = $this->invoiceService->updateInvoice($request->validated(), $invoiceNumber);
 
+            if (!$invoice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invoice not found'
+                ], 404);
+            }
+
             // Return the updated invoice as JSON for Vue.js to use and update the UI
             return response()->json([
                 'status' => 'success',

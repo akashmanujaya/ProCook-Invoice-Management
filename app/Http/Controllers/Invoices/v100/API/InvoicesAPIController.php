@@ -107,6 +107,9 @@ class InvoicesAPIController extends BaseController
     {
         try {
             $invoice = $this->invoiceService->updateInvoice($request->validated(), $invoiceNumber);
+            if (!$invoice) {
+                return ApiResponse::error('Invoice not found', 404);
+            }
             return ApiResponse::send($invoice, 'Invoice updated successfully');
         } catch (\Exception $e) {
             return ApiResponse::error('Error updating invoice: ' . $e->getMessage(), 500);

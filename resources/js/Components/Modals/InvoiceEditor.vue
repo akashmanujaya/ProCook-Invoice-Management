@@ -11,17 +11,26 @@
           <!-- Form for editing an existing invoice -->
           <v-form>
             <v-text-field required v-model="invoice.first_name" label="First Name" outlined :error-messages="errors.first_name"></v-text-field>
+
             <v-text-field required v-model="invoice.last_name" label="Last Name" outlined :error-messages="errors.last_name"></v-text-field>
+
+            <label for="invoiceDate" class="form-label">Invoice Date</label>
             <VueDatePicker
                 v-model="invoice.invoice_date"
                 :config="{ type: 'datetime', useUtc: false }"
                 class="mb-2"
                 :error-messages="errors.invoice_date">
             </VueDatePicker>
+
             <v-text-field v-model="invoice.payment_term" label="Payment Term" type="number" :rules="paymentTermRules" outlined :error-messages="errors.payment_term"></v-text-field>
+
+            <label for="DueDate" class="form-label">Due Date</label>
             <VueDatePicker v-model="invoice.due_date" :config="{ type: 'datetime' }" class="mb-2" :error-messages="errors.due_date"></VueDatePicker>
+
             <v-textarea v-model="invoice.description" label="Description" :counter="3000" outlined :error-messages="errors.description"></v-textarea>
+
             <v-text-field v-model="invoice.total_amount" label="Total Amount" prefix="$" type="number" step="0.01" outlined :error-messages="errors.total_amount"></v-text-field>
+            
             <div class="flex items-center justify-between">
               <v-btn :disabled="loading" :loading="loading" color="blue darken-1" text @click="updateInvoice">
                 Save Changes

@@ -11,18 +11,21 @@
         <!-- Form for creating a new invoice -->
         <v-form>
           <v-text-field required v-model="invoice.firstName" label="First Name" outlined :error-messages="errors.first_name"></v-text-field>
+
           <v-text-field v-model="invoice.lastName" label="Last Name" outlined :error-messages="errors.last_name"></v-text-field>
 
-          <!-- Vue 3 Datepicker for Invoice Date -->
+          <label for="invoiceDate" class="form-label">Invoice Date</label>
           <VueDatePicker v-model="invoice.invoiceDate" :config="{ type: 'datetime' }" class="mb-2" :error-messages="errors.invoice_date"></VueDatePicker>
 
-          <v-text-field v-model="invoice.paymentTerm" label="Payment Term" type="number" :rules="paymentTermRules" outlined :error-messages="errors.payment_term"></v-text-field>
+          <v-text-field v-model="invoice.paymentTerm" label="Payment Term (Days)" type="number" :rules="paymentTermRules" outlined :error-messages="errors.payment_term"></v-text-field>
 
-          <!-- Vue 3 Datepicker for Due Date -->
-          <VueDatePicker v-model="invoice.dueDate" :config="{ type: 'datetime' }"  class="mb-2" :error-messages="errors.due_date"></VueDatePicker>
+          <label for="DueDate" class="form-label">Due Date</label>
+          <VueDatePicker  v-model="invoice.dueDate" :config="{ type: 'datetime' }"  class="mb-2" :error-messages="errors.due_date"></VueDatePicker>
 
           <v-textarea v-model="invoice.description" label="Description" :counter="3000" outlined :error-messages="errors.description"></v-textarea>
+
           <v-text-field v-model="invoice.totalAmount" label="Total Amount" prefix="$" type="number" step="0.01" outlined :error-messages="errors.total_amount"></v-text-field>
+          
           <div class="flex items-center justify-between">
             <v-btn
               :disabled="loading"
@@ -192,5 +195,12 @@ function setDefaultvalues() {
 .v-input__slot::before,
 .v-input__slot::after {
     display: none !important;
+}
+
+.form-label {
+  font-weight: lighter;
+  margin-bottom: 5px;
+  display: block;
+  color: rgb(15, 15, 15);
 }
 </style>

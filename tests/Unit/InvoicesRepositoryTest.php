@@ -11,6 +11,17 @@ class InvoicesRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        // Ensure using SQLite in-memory database
+        $this->app->make('config')->set('database.default', 'sqlite');
+        $this->app->make('config')->set('database.connections.sqlite.database', ':memory:');
+
+
+    }
+
     public function testFindByNumber()
     {
         // Create a sample invoice using the factory

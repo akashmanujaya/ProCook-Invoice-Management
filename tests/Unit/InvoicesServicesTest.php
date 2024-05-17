@@ -19,6 +19,12 @@ class InvoicesServicesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        // Ensure using SQLite in-memory database
+        $this->app->make('config')->set('database.default', 'sqlite');
+        $this->app->make('config')->set('database.connections.sqlite.database', ':memory:');
+
+
+
         $this->invoiceRepo = Mockery::mock(InvoicesRepository::class);
         $this->invoiceService = new InvoicesServices($this->invoiceRepo);
     }

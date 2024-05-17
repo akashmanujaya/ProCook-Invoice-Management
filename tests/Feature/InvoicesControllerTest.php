@@ -3,57 +3,84 @@
 namespace Tests\Feature;
 
 use App\BO\Invoices\v100\Models\Invoices;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 class InvoicesControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $user;
+    private $token;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->artisan('db:seed');
+
+        // Create user
+        $this->user = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => bcrypt('password')
+        ]);
+
+        // Authenticate the user using the API login route
+        $response = $this->withHeaders([
+            'x-api-key' => env('API_KEY')
+        ])->postJson('/api/login', [
+            'email' => 'test@example.com',
+            'password' => 'password'
+        ]);
+
+        $this->token = $response->json('data.token');
+    }
+
     public function testIndex()
     {
         // Create sample invoices
         Invoices::factory()->count(2)->create();
 
-        $response = $this->getJson('invoices');
-
-        dd($response);
+        $response = $this->withHeaders([
+            'x-api-key' => env('API_KEY'),
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->getJson('/api/invoices');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'status',
+                'status_code',
                 'message',
                 'data' => [
-                    'data' => [
-                        '*' => [
-                            'invoice_number',
-                            'first_name',
-                            'last_name',
-                            'description',
-                            'invoice_date',
-                            'payment_term',
-                            'total_amount',
-                            'due_date',
-                            'status'
-                        ]
-                    ],
-                    'pagination' => [
-                        'total',
-                        'perPage',
-                        'currentPage',
-                        'lastPage',
-                        'from',
-                        'to'
+                    '*' => [
+                        'invoice_number',
+                        'first_name',
+                        'last_name',
+                        'description',
+                        'invoice_date',
+                        'payment_term',
+                        'total_amount',
+                        'due_date',
+                        'status'
                     ]
                 ]
             ]);
+
     }
 
     public function testShow()
     {
+        $this->actingAs($this->user);
+
         $invoice = Invoices::factory()->create(['invoice_number' => 'INV-001']);
 
-        $response = $this->getJson('/api/invoices/INV-001');
+        $response = $this->withHeaders([
+            'x-api-key' => env('API_KEY'),
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->getJson('/api/invoices/INV-001');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -75,6 +102,8 @@ class InvoicesControllerTest extends TestCase
 
     public function testStore()
     {
+        $this->actingAs($this->user);
+
         $invoiceData = [
             'first_name' => 'John',
             'last_name' => 'Doe',
@@ -86,7 +115,10 @@ class InvoicesControllerTest extends TestCase
             'status' => 1,
         ];
 
-        $response = $this->postJson('/api/invoices', $invoiceData);
+        $response = $this->withHeaders([
+            'x-api-key' => env('API_KEY'),
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/invoices', $invoiceData);
 
         $response->assertStatus(201)
             ->assertJsonStructure([
@@ -108,22 +140,38 @@ class InvoicesControllerTest extends TestCase
 
     public function testUpdate()
     {
+        $this->actingAs($this->user);
+
         $invoice = Invoices::factory()->create(['invoice_number' => 'INV-001']);
 
         $updateData = [
+            'first_name' => 'Updated First Name',
+            'last_name' => 'Updated Last Name',
             'description' => 'Updated Invoice Description',
-            'total_amount' => 1200.00
+            'invoice_date' => now()->format('Y-m-d H:i:s'),
+            'payment_term' => 30,
+            'total_amount' => 1200.00,
+            'due_date' => now()->addDays(30)->format('Y-m-d H:i:s'),
+            'status' => 'Pending'
         ];
 
-        $response = $this->putJson('/api/invoices/INV-001', $updateData);
+        // dd($invoice->invoice_number);
+
+        $response = $this->withHeaders([
+            'x-api-key' => env('API_KEY'),
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->putJson('api/invoices/' . $invoice->invoice_number, $updateData);
 
         $response->assertStatus(200)
             ->assertJson([
                 'status' => 'success',
                 'message' => 'Invoice updated successfully',
                 'data' => [
+                    'first_name' => 'Updated First Name',
+                    'last_name' => 'Updated Last Name',
                     'invoice_number' => 'INV-001',
                     'description' => 'Updated Invoice Description',
+                    "payment_term" => 30,
                     'total_amount' => number_format(1200.00, 2, '.', ',')
                 ]
             ]);
@@ -131,9 +179,14 @@ class InvoicesControllerTest extends TestCase
 
     public function testToggleStatus()
     {
+        $this->actingAs($this->user);
+
         $invoice = Invoices::factory()->create(['invoice_number' => 'INV-001', 'status' => 0]);
 
-        $response = $this->patchJson('/api/invoices/INV-001/toggle-status');
+        $response = $this->withHeaders([
+            'x-api-key' => env('API_KEY'),
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/invoices/toggle-status/INV-001');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -146,7 +199,10 @@ class InvoicesControllerTest extends TestCase
             ]);
 
         // Toggle back to pending
-        $response = $this->patchJson('/api/invoices/INV-001/toggle-status');
+        $response = $this->withHeaders([
+            'x-api-key' => env('API_KEY'),
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/invoices/toggle-status/INV-001');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -161,9 +217,14 @@ class InvoicesControllerTest extends TestCase
 
     public function testDestroy()
     {
+        $this->actingAs($this->user);
+
         $invoice = Invoices::factory()->create(['invoice_number' => 'INV-001']);
 
-        $response = $this->deleteJson('/api/invoices/INV-001');
+        $response = $this->withHeaders([
+            'x-api-key' => env('API_KEY'),
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->deleteJson('/api/invoices/' . $invoice->invoice_number);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -171,6 +232,6 @@ class InvoicesControllerTest extends TestCase
                 'message' => 'Invoice deleted successfully'
             ]);
 
-        $this->assertNull(Invoices::find($invoice->id));
+        $this->assertNull(Invoices::find($invoice->invoice_number));
     }
 }
